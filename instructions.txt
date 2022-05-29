@@ -1,4 +1,4 @@
-At Holaluz we are worried about fraud in electricity readings and we have decided to implement a suspicious reading detector. 
+At Acme Electric Inc. we are worried about fraud in electricity readings and we have decided to implement a suspicious reading detector.
 
 Some clients have phoned us suspecting some squatters have been tapping into their electricity lines and this is why you may find some extremely high readings compared to their regular usage.
 At the same time, we suspect some clients are tapping their building electricity lines and you may also find extremely low readings.
