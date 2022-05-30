@@ -10,4 +10,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install dependencies & test
-        run: ls && ./composer.phar install && vendor/bin/phpunit -c phpunit.xml
+        run: ls && ./composer.phar install \
+          && ls vendor/autoload.php \
+          && vendor/bin/phpunit -c phpunit.xml --bootstrap vendor/autoload.php
