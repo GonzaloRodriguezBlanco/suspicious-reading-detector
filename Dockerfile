@@ -5,7 +5,9 @@ FROM composer:${COMPOSER_TAG} as builder
 WORKDIR /usr/src/suspicious-reading-detector
 
 COPY src ./src
+COPY tests ./tests
 COPY composer.* ./
+COPY phpunit.xml ./
 
 RUN composer install
 

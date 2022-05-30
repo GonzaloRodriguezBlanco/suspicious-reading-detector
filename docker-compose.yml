@@ -4,6 +4,6 @@ services:
     stdin_open: true
     tty: true
     entrypoint: /bin/sh
-    volumes:
-      - "./:/usr/src/suspicious-reading-detector"
-      - "./data:/usr/src/suspicious-reading-detector/data:ro"
+    #volumes:
+    #  - "./:/usr/src/suspicious-reading-detector"
+    #  - "./data:/usr/src/suspicious-reading-detector/data:ro"
