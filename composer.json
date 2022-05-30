@@ -31,6 +31,6 @@
         "doctrine/annotations": "^1.13"
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit -c phpunit.xml"
     }
 }
