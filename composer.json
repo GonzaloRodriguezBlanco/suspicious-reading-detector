@@ -2,6 +2,7 @@
     "name": "gonzalo-rodriguez/suspicious-reading-detector",
     "description": "Technical assessment for backend developer position at holaluz.",
     "type": "project",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "GonzaloRodriguez\\SuspiciousReadingDetector\\": "src/"
