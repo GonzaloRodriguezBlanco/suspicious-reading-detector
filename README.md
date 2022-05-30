@@ -11,12 +11,12 @@ not functional</ins> for the following pending issues TO-DO:
 
 This will give you a shell inside the container:
 ```
-docker compose run --rm srd
+docker compose up -d --build
 ```
-Once you have the prompt `/usr/src/suspicious-reading-detector #` you could execute the tests:
+Execute the tests inside the running container:
 
 ```
-vendor/bin/phpunit
+docker compose exec srd vendor/bin/phpunit
 ```
 
 ## Assessment Requirements
