@@ -14,6 +14,8 @@ class Client
     /** @var Collection<Reading> $readings */
     private Collection $readings;
 
+    private int $median;
+
 
     /**
      * @param String $id
@@ -75,12 +77,19 @@ class Client
         return $this;
     }
 
-    private function getMedian(): int {
+    public function getMedian(): int {
+        if (isset($this->median)) {
+            return $this->median;
+        }
+
         $readings = [];
         foreach ($this->readings as $reading) {
             $readings[] = $reading->getValue();
         }
-        return MedianCalculator::calculate($readings);
+
+        $this->median = MedianCalculator::calculate($readings);
+
+        return $this->median;
     }
 
     /**
