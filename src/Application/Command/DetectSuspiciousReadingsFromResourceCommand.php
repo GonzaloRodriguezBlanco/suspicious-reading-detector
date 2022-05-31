@@ -1,11 +1,9 @@
 <?php
 
-namespace GonzaloRodriguez\SuspiciousReadingDetector\application\command;
+namespace GonzaloRodriguez\SuspiciousReadingDetector\Application\Command;
 
-use DI\Annotation\Inject;
 use Doctrine\Common\Collections\Collection;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\InputPortInterface;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\OutputPortInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,20 +14,15 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: 'app:detect-suspicious-readings',
     description: 'Detect suspicious readings.'
 )]
-class DetectSuspiciousReadingsFromResourceCommand extends Command implements OutputPortInterface
+class DetectSuspiciousReadingsFromResourceCommand extends Command
 {
 
-    /**
-     * @Inject
-     * @var InputPortInterface
-     */
     private InputPortInterface $inputPort;
 
-    private Collection $suspiciousReadings;
 
-
-    public function __construct()
+    public function __construct(InputPortInterface $inputPort)
     {
+        $this->inputPort = $inputPort;
         parent::__construct();
     }
 
@@ -52,18 +45,20 @@ class DetectSuspiciousReadingsFromResourceCommand extends Command implements Out
 
         $uri = $input->getArgument('uri');
 
-        // retrieve the argument value using getArgument()
-        $output->writeln('Uri: '. $uri);
+        $suspiciousReadings = $this->inputPort->setParams($uri)->execute();
 
-        $this->inputPort->setParams($uri)->execute();
+        $output->writeln('Client | Month | Suspicious | Median');
 
-        $output->writeln($this->suspiciousReadings);
+        foreach ($suspiciousReadings as $reading) {
+            $output->writeln($reading);
+        }
+
+        $output->writeln(['',
+            '=======================================',
+            'Resource URI: '. $uri,
+            'Suspicious readings Total: ' . $suspiciousReadings->count(),
+        ]);
 
         return Command::SUCCESS;
-    }
-
-    public function setResult(Collection $suspiciousReadings): void
-    {
-        $this->suspiciousReadings = $suspiciousReadings;
     }
 }

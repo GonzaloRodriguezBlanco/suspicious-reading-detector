@@ -2,27 +2,26 @@
 
 namespace GonzaloRodriguez\SuspiciousReadingDetector\Domain\UseCase;
 
+
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\InputPortInterface;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\OutputPortInterface;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\ClientRepositoryPortInterface;
+use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Reading;
+use GonzaloRodriguez\SuspiciousReadingDetector\Domain\UseCase\Factory\ClientRepositoryFactoryInterface;
 use RuntimeException;
 
 class DetectSuspiciousReadingsFromResourceUseCase implements InputPortInterface
 {
     private string $uri;
 
-    private ClientRepositoryPortInterface $repository;
-    private OutputPortInterface $outputPort;
+    private ClientRepositoryFactoryInterface $factory;
 
     /**
-     * @param ClientRepositoryPortInterface $repository
-     * @param OutputPortInterface $outputPort
+     * @param ClientRepositoryFactoryInterface $factory
      */
-    public function __construct(ClientRepositoryPortInterface $repository, OutputPortInterface $outputPort)
+    public function __construct(ClientRepositoryFactoryInterface $factory)
     {
-        $this->repository = $repository;
-        $this->outputPort = $outputPort;
+        $this->factory = $factory;
     }
 
     public function setParams(string $uri): InputPortInterface
@@ -31,11 +30,16 @@ class DetectSuspiciousReadingsFromResourceUseCase implements InputPortInterface
         return $this;
     }
 
-    public function execute(): void
+    /**
+     * @return Collection<Reading>
+     */
+    public function execute(): Collection
     {
         $this->checkParams();
 
-        $clients = $this->repository->findAllClientsFromUri($this->uri);
+        $repository = $this->factory->create($this->uri);
+
+        $clients = $repository->findAllClientsFromUri($this->uri);
 
         $suspiciousReadingsArray = [];
 
@@ -45,9 +49,7 @@ class DetectSuspiciousReadingsFromResourceUseCase implements InputPortInterface
             }
         }
 
-        $suspiciousReadings = new ArrayCollection($suspiciousReadingsArray);
-
-        $this->outputPort->setResult($suspiciousReadings);
+        return new ArrayCollection($suspiciousReadingsArray);
     }
 
     private function checkParams(): void
