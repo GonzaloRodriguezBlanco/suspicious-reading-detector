@@ -68,7 +68,7 @@ class ClientTest extends TestCase
         $expectedSuspiciousLowerReadingValue = 7759;
         $expectedSuspiciousHigherReadingValue = 162078;
 
-        $client = new Client("583ef6329d7b9");
+        $client = new Client("583ef6329d89b");
         $client
             ->addReading(new Reading(new DateTime('2016-01'), 59700, Status::Unchecked))
             ->addReading(new Reading(new DateTime('2016-02'), 61524, Status::Unchecked))

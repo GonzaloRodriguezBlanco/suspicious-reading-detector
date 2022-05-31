@@ -5,14 +5,17 @@ use Doctrine\Common\Collections\Collection;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Client;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Reading;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Status;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\OutputPortInterface;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\ClientRepositoryPortInterface;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\UseCase\DetectSuspiciousReadingsFromResourceUseCase;
+use GonzaloRodriguez\SuspiciousReadingDetector\Domain\UseCase\Factory\ClientRepositoryFactoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class DetectSuspiciousReadingsFromResourceUseCaseTest extends TestCase
 {
     public function testDetectSuspiciousReadingsInTwoClients(): void {
+
+        $expectedSuspiciousReadingsCollectionSize = 3;
+        $expectedReadingValues = [3564, 162078, 7759];
 
         $clients = new ArrayCollection();
         $client = new Client("583ef6329d7b9");
@@ -32,7 +35,7 @@ class DetectSuspiciousReadingsFromResourceUseCaseTest extends TestCase
 
         $clients->add($client);
 
-        $anotherClient = new Client("583ef6329d7b9");
+        $anotherClient = new Client("583ef6329d89b");
         $anotherClient
             ->addReading(new Reading(new DateTime('2016-01'), 59700, Status::Unchecked))
             ->addReading(new Reading(new DateTime('2016-02'), 61524, Status::Unchecked))
@@ -49,26 +52,28 @@ class DetectSuspiciousReadingsFromResourceUseCaseTest extends TestCase
 
         $clients->add($anotherClient);
 
-        $mockRepository = $this->createMock(ClientRepositoryPortInterface::class);
-        $mockRepository->method('findAllClientsFromUri')
+        $mockClientRepository = $this->createMock(ClientRepositoryPortInterface::class);
+        $mockClientRepository->method('findAllClientsFromUri')
             ->willReturn($clients);
 
-        $mockOutput = $this->createMock(OutputPortInterface::class);
-        $mockOutput->expects($this->once())
-            ->method('setResult')
-            ->with($this->callback(function($readings) {
-                $expectedReadingValues = [3564, 162078, 7759];
-                $assertCount = $readings->count() === 3;
+        $mockClientRepositoryFactory = $this->createMock(ClientRepositoryFactoryInterface::class);
+        $mockClientRepositoryFactory->method('create')
+            ->willReturn($mockClientRepository);
 
-                foreach ($readings as $reading) {
-                    $expectedReadingValues = array_filter($expectedReadingValues, static function ($value) use ($reading) {
-                        return $value !== $reading->getValue();
-                    });
-                }
+        $useCase = new DetectSuspiciousReadingsFromResourceUseCase($mockClientRepositoryFactory);
+        $readings = $useCase->setParams('')->execute();
 
-                return $assertCount && empty($expectedReadingValues);
-            }));
-        $useCase = new DetectSuspiciousReadingsFromResourceUseCase($mockRepository, $mockOutput);
-        $useCase->setParams('')->execute();
+        $actualCount = $readings->count();
+
+        self::assertSame($expectedSuspiciousReadingsCollectionSize, $actualCount, sprintf("Count should be %d, but it was %d", $expectedSuspiciousReadingsCollectionSize, $actualCount));
+
+        foreach ($readings as $reading) {
+            $actualValue = $reading->getValue();
+            $this->assertContains($actualValue, $expectedReadingValues, sprintf("%d is not one of %s", $actualValue, implode(',', $expectedReadingValues)));
+            $expectedReadingValues = array_filter($expectedReadingValues, static function ($value) use ($actualValue) {
+                return $value !== $actualValue;
+            });
+        }
+
     }
 }
