@@ -96,4 +96,17 @@ class Reading
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return sprintf(
+            "%s | %s | %d | %d",
+            $this->client->getId(),
+            $this->getPeriod()->format('M'),
+            $this->value,
+            $this->client->getMedian()
+        );
+
+    }
+
+
 }
