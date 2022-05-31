@@ -8,6 +8,7 @@ COPY src ./src
 COPY tests ./tests
 COPY composer.* ./
 COPY phpunit.xml ./
+COPY .env ./
 
 RUN composer install
 
