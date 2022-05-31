@@ -1,22 +1,75 @@
 # Suspicious Reading Detector
 
-This code is the WIP technical assessment solution for a backend position at Acme Electric Inc. This code is no longer maintained 
-or completed due to a lack of time. This README tries to explain the work that has been done. <ins>This implementation is 
-not functional</ins> for the following pending issues TO-DO:
-
-- Issue with de dependency injection (PHP-DI). Not fully configured, it needs more time to investigate.
-- Infrastructure layer in TO-DO state. This will implement the adapters of the ClientRepositoryInterface, one of them will implement the access and parse of csv files, and another of xml files.
+This code is the technical assessment solution for a backend position at Acme Electric Inc. This code is no longer maintained. 
+This README tries to explain the work that has been done.
 
 ## Run or test something
 
-This will give you a shell inside the container:
+This will give you a docker container up and running:
 ```
 docker compose up -d --build
 ```
-Execute the tests inside the running container:
 
+Execute the tests inside the running container:
 ```
 docker compose exec srd vendor/bin/phpunit
+```
+
+Execute the command inside the container detecting suspicious readings in CSV file:
+```
+docker compose exec srd src/Application.php app:detect-suspicious-readings data/2016-readings.csv
+```
+
+```
+Suspicious Reading Detector
+===========================
+
+Client | Month | Suspicious | Median
+583ef6329d7b9 | Sep | 3564 | 42997
+583ef6329d89b | Sep | 162078 | 38951
+583ef6329d89b | Oct | 7759 | 38951
+583ef6329d89b | Nov | 60952 | 38951
+583ef6329d916 | Jul | 40223 | 21798
+583ef6329d916 | Aug | 41512 | 21798
+583ef6329d916 | Sep | 2479 | 21798
+583ef6329d916 | Oct | 41334 | 21798
+583ef6329d916 | Nov | 42664 | 21798
+583ef6329d916 | Dec | 40179 | 21798
+583ef6329d954 | Jan | 43968 | 21668
+583ef6329d954 | Feb | 40389 | 21668
+583ef6329d954 | Mar | 42994 | 21668
+583ef6329d954 | Apr | 42569 | 21668
+
+=======================================
+Resource URI: data/2016-readings.csv
+Suspicious readings Total: 14
+```
+
+Execute the command inside the container detecting suspicious readings in XML file:
+```
+docker compose exec srd src/Application.php app:detect-suspicious-readings data/2016-readings.xml
+```
+
+```
+Suspicious Reading Detector
+===========================
+
+Client | Month | Suspicious | Median
+583ef6329e237 | Nov | 1379 | 21590
+583ef6329e271 | Oct | 121208 | 30807
+583ef6329e2e2 | Aug | 52394 | 31260
+583ef6329e2e2 | Sep | 55005 | 31260
+583ef6329e2e2 | Oct | 56055 | 31260
+583ef6329e2e2 | Nov | 55453 | 31260
+583ef6329e2e2 | Dec | 53315 | 31260
+583ef6329e3ab | Nov | 6440 | 27899
+583ef6329e3ab | Jan | 50902 | 27899
+583ef6329e3ab | Feb | 53606 | 27899
+583ef6329e3ab | Mar | 52789 | 27899
+
+=======================================
+Resource URI: data/2016-readings.xml
+Suspicious readings Total: 11
 ```
 
 ## Assessment Requirements
@@ -43,6 +96,7 @@ There are the following layers:
 
 - domain
 - application
+- infrastructure
 
 ![Diagram](doc/img/diagram.png "Diagram")
 
@@ -50,21 +104,26 @@ The idea was to implement the logic in the domain layer. The Client Entity/Model
 which detects the suspicious readings in himself. There are several port Interfaces to "interact" with the domain layer:
 
 1. *InputPortInterface* to setParams and launch the execution of the use case.
-2. *OutputPortInterface* to obtain the result of the execution.
-3. *ClientRepositoryInterface* to obtain data from the infrastructure layer
+2. *ClientRepositoryInterface* to obtain data from the infrastructure layer
+3. *ClientRepositoryFactoryInterface* to obtain an instance of ClientRepositoryInterface
 
-For the application layer the idea was to use the symfony/console component which implements the OuputPort and it has 
+For the application layer the idea was to use the symfony/console component which has 
 injected the inputPortInterface.
+
+The infrastructure layer implements two ClientRepositoryInterface, one of them to obtain data from CSV files and another 
+to obtain data from XML files. This layer also implements the factory ClientRepositoryFactoryInterface which knows the 
+repository implementations and provides the proper repository instance based on file extension (.csv or .xml) in the uri
+passed to the factory.
 
 ## About Docker
 
-This project uses a two stages Dockerfile, although it is not refined at all.
+This project uses a two stages Dockerfile.
 
 ## About Git
 
 Normally I use Gitflow as strategy, Conventional commit messages and atomic commits. You can check another projects in 
-my public GitHub profiles if you are looking for examples. Due to the lack of time this is going to be committed as an 
-only commit.
+my public GitHub profiles if you are looking for examples. ~~Due to the lack of time this is going to be committed as an 
+only commit.~~ Additional commits has been made to have a functional project.
 
 ## About tests
 
