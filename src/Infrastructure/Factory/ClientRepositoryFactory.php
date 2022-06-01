@@ -17,6 +17,7 @@ class ClientRepositoryFactory implements ClientRepositoryFactoryInterface
 
     /**
      * @param CsvReadingMapper $csvReadingMapper
+     * @param XmlReadingMapper $xmlReadingMapper
      */
     public function __construct(CsvReadingMapper $csvReadingMapper, XmlReadingMapper $xmlReadingMapper)
     {

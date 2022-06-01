@@ -3,13 +3,10 @@
 namespace GonzaloRodriguez\SuspiciousReadingDetector\Infrastructure\Repository;
 
 
-use DateTime;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Exception;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\ClientRepositoryPortInterface;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Client;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Reading;
-use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Status;
 use GonzaloRodriguez\SuspiciousReadingDetector\Infrastructure\Mapper\XmlReadingMapper;
 
 class XmlClientRepository implements ClientRepositoryPortInterface
@@ -25,6 +22,9 @@ class XmlClientRepository implements ClientRepositoryPortInterface
         $this->mapper = $mapper;
     }
 
+    /**
+     * @throws Exception
+     */
     public function findAllClientsFromUri($uri): Collection
     {
         $xmlReadings = simplexml_load_string(file_get_contents(realpath($uri)));

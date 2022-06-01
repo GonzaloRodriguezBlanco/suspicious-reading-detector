@@ -2,7 +2,6 @@
 
 namespace GonzaloRodriguez\SuspiciousReadingDetector\Application\Command;
 
-use Doctrine\Common\Collections\Collection;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\InputPortInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

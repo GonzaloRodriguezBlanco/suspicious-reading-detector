@@ -8,6 +8,7 @@ use GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model\Client;
 interface ClientRepositoryPortInterface
 {
     /**
+     * @param $uri
      * @return Collection<Client>
      */
     public function findAllClientsFromUri($uri): Collection;

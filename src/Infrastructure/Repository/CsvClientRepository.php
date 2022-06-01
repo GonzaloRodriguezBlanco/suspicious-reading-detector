@@ -5,6 +5,7 @@ namespace GonzaloRodriguez\SuspiciousReadingDetector\Infrastructure\Repository;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use GonzaloRodriguez\SuspiciousReadingDetector\Domain\ClientRepositoryPortInterface;
 use GonzaloRodriguez\SuspiciousReadingDetector\Infrastructure\Mapper\CsvReadingMapper;
 
@@ -21,16 +22,19 @@ class CsvClientRepository implements ClientRepositoryPortInterface
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function findAllClientsFromUri($uri): Collection
     {
-        $file = fopen(realpath($uri), 'r');
+        $file = fopen(realpath($uri), 'rb');
 
         $clients = new ArrayCollection();
         $counter = 0;
         $client = null;
         $row = 0;
         while (!feof($file)) {
-            $csvReading = fgetcsv($file, null,',');
+            $csvReading = fgetcsv($file);
             $row ++;
             if ($row === 1) {
                 continue;
