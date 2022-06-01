@@ -3,6 +3,11 @@
 This code is the technical assessment solution for a backend position at Acme Electric Inc. This code is no longer maintained. 
 This README tries to explain the work that has been done.
 
+> **_PAIRING:_**  There is a change in the algorithm used to calculate suspicious readings. The request is to use the 
+> average instead the median. But the client tests are still working because de data set used in the tests also satisfy
+> The new algorithm. The normal execution with the data files give as different result which is ok.
+
+
 ## Run or test something
 
 This will give you a docker container up and running:

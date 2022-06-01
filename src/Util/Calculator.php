@@ -2,9 +2,9 @@
 
 namespace GonzaloRodriguez\SuspiciousReadingDetector\Util;
 
-class MedianCalculator
+class Calculator
 {
-    public static function calculate(array $array): int {
+    public static function calculateMedian(array $array): int {
         sort($array);
         $count = count($array);
 
@@ -18,5 +18,9 @@ class MedianCalculator
 
         // median for even size array (par)
         return round(($array[$middle] + $array[$middle - 1])/2);
+    }
+
+    public static function calculateAverage(array $array): int {
+        return round(array_sum($array) / count($array));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace GonzaloRodriguez\SuspiciousReadingDetector\Tests;
 
-use GonzaloRodriguez\SuspiciousReadingDetector\Util\MedianCalculator;
+use GonzaloRodriguez\SuspiciousReadingDetector\Util\Calculator;
 use PHPUnit\Framework\TestCase;
 
 class MedianCalculatorTest extends TestCase
@@ -12,7 +12,7 @@ class MedianCalculatorTest extends TestCase
 
         $expected = 2;
 
-        $actual = MedianCalculator::calculate($array);
+        $actual = Calculator::calculateMedian($array);
 
         $this->assertSame($expected, $actual, sprintf("Median should be %d, but it was %d", $expected, $actual));
     }
@@ -22,8 +22,18 @@ class MedianCalculatorTest extends TestCase
 
         $expected = 3;
 
-        $actual = MedianCalculator::calculate($array);
+        $actual = Calculator::calculateMedian($array);
 
         $this->assertSame($expected, $actual, sprintf("Median should be %d, but it was %d", $expected, $actual));
+    }
+
+    public function testCalculateAverageForArray() : void {
+        $array = [ 10, 10, 20, 20];
+
+        $expected = 15;
+
+        $actual = Calculator::calculateAverage($array);
+
+        $this->assertSame($expected, $actual, sprintf("Average should be %d, but it was %d", $expected, $actual));
     }
 }

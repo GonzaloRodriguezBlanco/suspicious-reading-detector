@@ -5,7 +5,7 @@ namespace GonzaloRodriguez\SuspiciousReadingDetector\Domain\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use GonzaloRodriguez\SuspiciousReadingDetector\Util\MedianCalculator;
+use GonzaloRodriguez\SuspiciousReadingDetector\Util\Calculator;
 
 class Client
 {
@@ -87,7 +87,7 @@ class Client
             $readings[] = $reading->getValue();
         }
 
-        $this->median = MedianCalculator::calculate($readings);
+        $this->median = Calculator::calculateAverage($readings);
 
         return $this->median;
     }
